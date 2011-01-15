@@ -1996,7 +1996,10 @@ ig.module('game.entities.particle').requires('impact.entity').defines(function (
 });
 
 // lib/game/words.js
-// XXX This is being loaded automatically now. Figure out a way to customize it.
+ig.baked = true;
+ig.module('game.words').defines(function () {
+    WORDS = {};
+});
 
 // lib/game/entities/enemy.js
 ig.baked = true;
@@ -2447,8 +2450,11 @@ ig.module('game.entities.player').requires('impact.entity', 'game.entities.parti
 });
 
 // lib/game/main.js
+var dicts = [["Hiragana", "dicts.hira"], ["Katakana", "dicts.kana"]];
+var current_dict = 0;
+
 ig.baked = true;
-ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.enemy-missle', 'game.entities.enemy-mine', 'game.entities.enemy-destroyer', 'game.entities.enemy-oppressor', 'game.entities.player').defines(function () {
+ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.enemy-missle', 'game.entities.enemy-mine', 'game.entities.enemy-destroyer', 'game.entities.enemy-oppressor', 'game.entities.player', 'dicts.hira').defines(function () {
     Number.zeroes = '000000000000';
     Number.prototype.zeroFill = function (d) {
         var s = this.toString();
@@ -2767,6 +2773,22 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             ig.music.volume = (ig.music.volume + 0.1).limit(0, 1);
         }
     });
+    MenuItemDictionary = MenuItem.extend({
+        getText: function () {
+            return 'Dictionary: < ' + dicts[current_dict][0] + ' >';
+        },
+        left: function () {
+	    current_dict = (current_dict-1) % (dicts.length);
+	    this.update();
+        },
+        right: function () {
+	    current_dict = (current_dict+1) % (dicts.length);
+	    this.update();
+        },
+	update: function () {
+	    window.ig._loadScript(dicts[current_dict][1], "game.main");
+	},
+    });
     MenuItemResume = MenuItem.extend({
         getText: function () {
             return 'Resume';
@@ -2780,7 +2802,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
         fontSelected: new ig.Font('media/fonts/tungsten-18-orange.png'),
         fontTitle: new ig.Font('media/fonts/tungsten-48.png'),
         current: 0,
-        itemClasses: [MenuItemSoundVolume, MenuItemMusicVolume, MenuItemResume],
+        itemClasses: [MenuItemSoundVolume, MenuItemMusicVolume, MenuItemDictionary, MenuItemResume],
         items: [],
         init: function () {
             for (var i = 0; i < this.itemClasses.length; i++) {
