@@ -2450,7 +2450,7 @@ ig.module('game.entities.player').requires('impact.entity', 'game.entities.parti
 });
 
 // lib/game/main.js
-var dicts = [["Hiragana", "dicts.hira"], ["Katakana", "dicts.kana"]];
+var dicts = [["Hiragana", "dicts.hira"], ["Katakana", "dicts.kana"], ["JMDict", "dicts.JMdict"]];
 var current_dict = 0;
 
 ig.baked = true;
@@ -2778,11 +2778,11 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             return 'Dictionary: < ' + dicts[current_dict][0] + ' >';
         },
         left: function () {
-	    current_dict = (current_dict-1) % (dicts.length);
+	    current_dict = Math.max(0, (current_dict-1));
 	    this.update();
         },
         right: function () {
-	    current_dict = (current_dict+1) % (dicts.length);
+	    current_dict = Math.min((current_dict+1), (dicts.length)-1);
 	    this.update();
         },
 	update: function () {
