@@ -2036,9 +2036,12 @@ ig.module('game.entities.enemy').requires('impact.entity', 'impact.font', 'game.
 	    var entry = null;
 	    do {
 		var len = Math.floor(Math.random()*l);
-		entry = WORDS[len].random();
-		w = entry[1];
-	    } while (ig.game.targets[w.charAt(0)].length);
+		var pos = WORDS[len];
+		if (pos) {
+		    entry = pos.random();
+		    w = entry[1];
+		}
+	    } while (!w || ig.game.targets[w.charAt(0)].length);
 	    this.health = w.length;
 	    return entry;
         },
@@ -2063,13 +2066,15 @@ ig.module('game.entities.enemy').requires('impact.entity', 'impact.font', 'game.
             var y = (this.pos.y + this.size.y - 10).limit(2, ig.system.height - 19);
             var bx = ig.system.getDrawPos(x - w - 2);
             var by = ig.system.getDrawPos(y - 1);
-            ig.system.context.fillStyle = 'rgba(0,0,0,0.5)';
-            ig.system.context.fillRect(bx, by, w + 3, 19);
             if (this.targeted) {
-                this.fontActive.draw(this.remainingWord, x, y, ig.Font.ALIGN.RIGHT);
-            } else {
-                this.font.draw(this.remainingWord, x, y, ig.Font.ALIGN.RIGHT);
-            }
+		ig.system.context.fillStyle = 'orange';
+		ig.system.context.font = "bold 12px sans-serif";
+	    } else {
+		ig.system.context.fillStyle = 'white';
+		ig.system.context.font = "12px sans-serif";
+	    }
+	    ig.system.context.textAlign = 'right';
+	    ig.system.context.fillText(this.entry[0], x, y);
         },
         kill: function () {
             ig.game.unregisterTarget(this.word.charAt(0), this);
