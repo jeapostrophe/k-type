@@ -2065,16 +2065,16 @@ ig.module('game.entities.enemy').requires('impact.entity', 'impact.font', 'game.
                 return;
             }
             var w = this.font.widthForString(this.word);
-            var x = (this.pos.x - 6).limit(w + 2, ig.system.width - 1);
-            var y = (this.pos.y + this.size.y - 10).limit(2, ig.system.height - 19);
+            var x = (this.pos.x + 9).limit(w + 3, ig.system.width - 1);
+            var y = (this.pos.y + this.size.y - 2).limit(2, ig.system.height - 19);
             var bx = ig.system.getDrawPos(x - w - 2);
             var by = ig.system.getDrawPos(y - 1);
             if (this.targeted) {
-		ig.system.context.fillStyle = 'orange';
-		ig.system.context.font = "bold 12px sans-serif";
+		ig.system.context.fillStyle = 'red';
+		ig.system.context.font = "bold 20px sans-serif";
 	    } else {
-		ig.system.context.fillStyle = 'white';
-		ig.system.context.font = "12px sans-serif";
+		ig.system.context.fillStyle = 'black';
+		ig.system.context.font = "20px sans-serif";
 	    }
 	    ig.system.context.textAlign = 'right';
 	    ig.system.context.fillText(this.entry[0], x, y);
