@@ -39,7 +39,8 @@
 		}
 	</style>
 	<meta name="description" content="Type To Shoot Game made with ImpactJS"/>
-	<script type="text/javascript" src="ztype.js"></script>
+	<!--<script type="text/javascript" src="ztype.js"></script>-->
+
 </head>
 <body>
 	<a class="made-with-impact" href="http://impactjs.com/" ><img src="media/made-with-impact.png"/></a>
@@ -52,5 +53,12 @@
 			<a href="http://www.apple.com/safari/">Safari</a>.
 		</p>
 	</canvas>
+	<script type="text/javascript">
+        var now = new Date();
+        var e = document.createElement("script");
+        e.type = "text/javascript";
+        e.src = "ztype.js?t=" + now.getTime();
+        document.body.appendChild(e);
+	</script>
 </body>
 </html>
