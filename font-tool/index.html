@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Impact Font Tool</title>
+	<style type="text/css">
+		body {
+			color: #000;
+			background-color: #cccccc;
+			font-family: helvetica, arial, sans-serif;
+			padding: 1em 0 0 1em;
+			font-size: 10pt;
+		}
+		#form {
+			padding-bottom: 1em;
+		}
+		#canvas {
+			-webkit-font-smoothing: antialiased;
+			display: block;
+		}
+		input[type=number] {
+			width: 4em;
+			text-align: right;
+		}
+		input[type=text] {
+			width: 5em;
+		}
+		input, select {
+			margin-right: 8px;
+		}
+	</style>
+</head>
+<body>
+
+<div id="form">
+	<select id="font" title="Face"></select>
+	<select id="style" title="Style">
+		<option value="">Normal</option>
+		<option value="bold ">Bold</option>
+		<!-- Italic font characters aren't measured correctly :/
+			<option value="italic ">Italic</option>
+			<option value="italic bold ">Bold Italic</option> 
+		-->
+	</select>
+	Size: <input id="size" type="number" min="1" step="1" value="16" title="Size (px)">
+	Color: <input id="color" type="text" value="#000000" title="Color">
+	Extra Spacing: <input id="spacing" type="number" min="1" step="1" value="0" title="Extra letter Spacing">
+	Last Char: <input id="lastChar" type="number" min="1" step="1" value="127" title="Extra letter Spacing">
+	<input type="button" value="Generate" onclick="draw()"/>
+	<input type="button" value="Save" onclick="save()"/>
+</div>
+<canvas id="canvas" width="100" height="10"></canvas>
+
+<object id="loadFonts" type="application/x-shockwave-flash" data="get_fonts.swf" width="1" height="1">
+	<param name="movie" value="get_fonts.swf">
+</object>
+<script type="text/javascript">
+var chars = [];
+
+function setFont( ctx, font, size, color, style ) {
+	ctx.font = style + size + 'px "' + font + '"';
+	ctx.fillStyle = color;
+	ctx.textBaseline = 'top';
+}
+
+function draw() {
+	var font = document.getElementById('font').value;
+	var size = parseFloat(document.getElementById('size').value);
+	var color = document.getElementById('color').value;
+	var style = document.getElementById('style').value;
+	var spacing = parseFloat(document.getElementById('spacing').value);
+	var lastChar = parseFloat(document.getElementById('lastChar').value);
+	
+	var canvas = document.getElementById('canvas');
+	var ctx = canvas.getContext('2d');
+	
+	chars = [];
+	for( var i = 32; i < lastChar; i++ ) {
+		chars.push( String.fromCharCode(i) );
+	}
+		
+	setFont( ctx, font, size, color, style );
+	
+	// Measure the width of each character
+	var totalWidth = 0;
+	var widthMap = [];
+	for( var i = 0; i < chars.length; i++ ) {
+		var width = Math.max(1,Math.ceil(ctx.measureText(chars[i]).width));
+		totalWidth += width + 1 + spacing * 2;
+		widthMap.push(width);
+	}
+	
+	// Resize Canvas; make it higher than we may need
+	canvas.width = totalWidth;
+	canvas.height = Math.ceil(size * 1.5);
+	setFont( ctx, font, size, color, style );
+	
+	// Draw!
+	ctx.clearRect( 0, 0, canvas.width, canvas.height );
+	for( var i = 0, x = 0; i < chars.length; i++ ) {
+		ctx.fillText( chars[i], x + spacing, 0 );
+		x += widthMap[i] + 1;
+	}
+	
+	// Measure the real height of the text
+	var height = Math.ceil( measureHeight(ctx, canvas.width, canvas.height, size/2) + 1 );
+	
+	
+	// Resize Canvas to the correct height and draw AGAIN :/
+	canvas.height = height + 1;
+	setFont( ctx, font, size, color, style );
+	
+	ctx.clearRect( 0, 0, canvas.width, canvas.height );
+	for( var i = 0, x = 0; i < chars.length; i++ ) {
+		ctx.fillText( chars[i], x + spacing, 0 );
+		ctx.fillRect( x, height, widthMap[i] + spacing * 2, 1 );
+		x += widthMap[i] + 1 + spacing * 2;
+	}
+}
+
+function measureHeight( ctx, width, height, startAtY ) {
+	var data = ctx.getImageData(0, 0, width, height).data;
+	
+	// Go through all pixels and find the first line that is completely
+	// transparent
+	for( var y = startAtY; y < height; y++ ) {
+		var found = false;
+		for( var x = 0; x < width; x++ ) {
+			if( data[y * width * 4 + x * 4 + 3] ) {
+				found = true;
+				break;
+			}
+		}
+		if( !found ) {
+			return y;
+		}
+	}
+	return height;
+}
+
+function save() {
+	window.location = document.getElementById('canvas').toDataURL("image/png");
+}
+
+// This function gets called from the get_fonts.swf and populates the select box
+// (c) by Pepa <http://www.unpljugged.com/>
+function getFontList(user_fonts) {
+	var fonts = user_fonts.split(',');
+	var select = document.getElementById('font');
+	
+	for( var i = 0; i < fonts.length; i++ ) {
+		var opt = document.createElement('option');
+		opt.value = fonts[i];
+		opt.innerHTML = fonts[i]
+		select.appendChild(opt);
+	}
+}
+
+</script>
+</body>
+</html>
