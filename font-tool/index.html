@@ -24,6 +24,9 @@
 		input[type=text] {
 			width: 5em;
 		}
+		input#excludes {
+			width: 16em;
+		}
 		input, select {
 			margin-right: 8px;
 		}
@@ -32,7 +35,7 @@
 <body>
 
 <div id="form">
-	<select id="font" title="Face"></select>
+	<input id="font" type="text" title="Face" placeholder="font"></select>
 	<select id="style" title="Style">
 		<option value="">Normal</option>
 		<option value="bold ">Bold</option>
@@ -45,14 +48,14 @@
 	Color: <input id="color" type="text" value="#000000" title="Color">
 	Extra Spacing: <input id="spacing" type="number" min="1" step="1" value="0" title="Extra letter Spacing">
 	Last Char: <input id="lastChar" type="number" min="1" step="1" value="127" title="Extra letter Spacing">
+	<br/>
+	Exclude intervals: <input id="excludes" type="text" title="Exclude intervals" placeholder="58-65, 127-1040"/>
+	<br/>
 	<input type="button" value="Generate" onclick="draw()"/>
 	<input type="button" value="Save" onclick="save()"/>
 </div>
 <canvas id="canvas" width="100" height="10"></canvas>
 
-<object id="loadFonts" type="application/x-shockwave-flash" data="get_fonts.swf" width="1" height="1">
-	<param name="movie" value="get_fonts.swf">
-</object>
 <script type="text/javascript">
 var chars = [];
 
@@ -63,21 +66,42 @@ function setFont( ctx, font, size, color, style ) {
 }
 
 function draw() {
+	var firstChar = 32
 	var font = document.getElementById('font').value;
 	var size = parseFloat(document.getElementById('size').value);
 	var color = document.getElementById('color').value;
 	var style = document.getElementById('style').value;
 	var spacing = parseFloat(document.getElementById('spacing').value);
 	var lastChar = parseFloat(document.getElementById('lastChar').value);
+	var excludesStr = document.getElementById('excludes').value.trim();
+	
+	var excludes = excludesStr == ""
+		? null
+		: excludesStr.split(/,\s*/).map(function(part){
+			var m = part.trim().match(/^(\d+)-(\d+)$/);
+			if ( m === null ) {
+				var msg = 'Wrong interval "'+part+'", expected "<number>-<number>"';
+				alert(msg);
+				throw new Error(msg);
+			}
+			return {from: +m[1], to: +m[2]};
+		})
+	function isExcluded(i) {
+		if ( excludes === null ) return false
+		return excludes.some(function(interval){
+			return i+firstChar >= interval.from && i+firstChar <= interval.to;
+		})
+	}
+	
 	
 	var canvas = document.getElementById('canvas');
 	var ctx = canvas.getContext('2d');
 	
 	chars = [];
-	for( var i = 32; i < lastChar; i++ ) {
+	for( var i = firstChar; i < lastChar; i++ ) {
 		chars.push( String.fromCharCode(i) );
 	}
-		
+	
 	setFont( ctx, font, size, color, style );
 	
 	// Measure the width of each character
@@ -85,6 +109,9 @@ function draw() {
 	var widthMap = [];
 	for( var i = 0; i < chars.length; i++ ) {
 		var width = Math.max(1,Math.ceil(ctx.measureText(chars[i]).width));
+		if ( isExcluded(i) ) {
+			width = 1;
+		}
 		totalWidth += width + 1 + spacing * 2;
 		widthMap.push(width);
 	}
@@ -97,7 +124,9 @@ function draw() {
 	// Draw!
 	ctx.clearRect( 0, 0, canvas.width, canvas.height );
 	for( var i = 0, x = 0; i < chars.length; i++ ) {
-		ctx.fillText( chars[i], x + spacing, 0 );
+		if ( !isExcluded(i) ) {
+			ctx.fillText( chars[i], x + spacing, 0 );
+		}
 		x += widthMap[i] + 1;
 	}
 	
@@ -111,7 +140,9 @@ function draw() {
 	
 	ctx.clearRect( 0, 0, canvas.width, canvas.height );
 	for( var i = 0, x = 0; i < chars.length; i++ ) {
-		ctx.fillText( chars[i], x + spacing, 0 );
+		if ( !isExcluded(i) ) {
+			ctx.fillText( chars[i], x + spacing, 0 );
+		}
 		ctx.fillRect( x, height, widthMap[i] + spacing * 2, 1 );
 		x += widthMap[i] + 1 + spacing * 2;
 	}
