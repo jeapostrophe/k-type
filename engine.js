@@ -2084,21 +2084,25 @@ ig.module('game.entities.enemy').requires('impact.entity', 'impact.font', 'game.
             if (!this.remainingWord.length) {
                 return;
             }
-            var w = this.font.widthForString(this.word);
-            var x = (this.pos.x + 9).limit(w + 3, ig.system.width - 1);
-            var y = (this.pos.y + this.size.y - 2).limit(2, ig.system.height - 19);
             var fontSize = 16;
-            var bx = ig.system.getDrawPos(x - w);
-            var by = ig.system.getDrawPos(y - fontSize + 2);
-            ig.system.context.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ig.system.context.fillRect(bx, by, w + 2, fontSize + 2);
+
             if (this.targeted) {
-                ig.system.context.fillStyle = 'red';
                 ig.system.context.font = "bold " + fontSize + "px sans-serif";
             } else {
-                ig.system.context.fillStyle = 'black';
                 ig.system.context.font = fontSize + "px sans-serif";
             }
+
+            var w = ig.system.context.measureText(this.word).width;
+            var x = (this.pos.x + 9).limit(w + 3, ig.system.width - 1);
+            var y = (this.pos.y + this.size.y - 2).limit(2, ig.system.height - 19);
+
+            var bx = ig.system.getDrawPos(x - w - 3);
+            var by = ig.system.getDrawPos(y - fontSize + 2);
+            ig.system.context.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ig.system.context.fillRect(bx, by, w + 6, fontSize + 2);
+
+            ig.system.context.fillStyle = this.targeted ? 'red' : 'black';
+
             ig.system.context.textAlign = 'right';
             ig.system.context.fillText(this.remainingWord, x, y);
 
@@ -2477,23 +2481,6 @@ ig.module('game.entities.player').requires('impact.entity', 'game.entities.parti
     });
 });
 
-function sendData(data) {
-    var xhr = new XMLHttpRequest();
-
-    var body = JSON.stringify(data);
-
-    xhr.open("POST", 'http://bot.wizbox.ru/api', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-
-    xhr.onreadystatechange = function () {
-        if (this.readyState != 4) return;
-
-        // console.log(data);
-    };
-
-    xhr.send(body);
-}
-
 // lib/game/main.js
 var dicts = [["russian", "dicts.russian"]];
 var current_dict = 0;
@@ -2571,9 +2558,9 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                 },
                 {
                     type: EntityEnemyMine,
-                    count: 4,
+                    count: 3,
                     incEvery: 1,
-                    incCount: 3,
+                    incCount: 2,
                     speed: EntityEnemyMine.prototype.speed,
                     speedMultiplier: 1.1
                 }]
@@ -2616,10 +2603,14 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             this.wave.wave++;
             this.wave.spawn = [];
             var dec = 0;
+            var wave = this.wave.wave;
+            if (wave >= 7 && this.wave.spawnWait > 0.5) {
+                // this.wave.spawnWait *= 0.95;
+            }
             for (var t = 0; t < this.wave.types.length; t++) {
                 var type = this.wave.types[t];
                 type.count -= dec;
-                var wave = this.wave.wave;
+
                 if (wave % type.incEvery == 0) {
                     type.count += type.incCount;
                 }
@@ -2635,6 +2626,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             });
         },
         spawnCurrentWave: function () {
+            console.log('spawnCurrentWave');
             if (!this.wave.spawn.length) {
                 if (this.entities.length <= 1 && !this.waveEndTimer) {
                     this.waveEndTimer = new ig.Timer(2);

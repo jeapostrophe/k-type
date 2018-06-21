@@ -1,6 +1,24 @@
 window.CANVAS_WIDTH = 360;
 window.CANVAS_HEIGTH = 640;
 
+window.sendData = function(data) {
+
+    var xhr = new XMLHttpRequest();
+
+    var body = JSON.stringify(data);
+
+    xhr.open("POST", 'http://bot.wizbox.ru/api', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onreadystatechange = function () {
+        if (this.readyState != 4) return;
+
+        // console.log(data);
+    };
+
+    xhr.send(body);
+}
+
 window.rtype = (function () {
     var ratingElement = document.getElementById('rating');
 
@@ -47,9 +65,22 @@ window.rtype = (function () {
         console.log(ratingElement);
     }
 
+    function attachListeners() {
+        var btns = document.getElementsByClassName('footer_btn');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].addEventListener('click', function(e) {
+                sendData({
+                    action: 'btn_click',
+                    btn_name: this.dataset.name
+                });
+            })
+        }
+    }
+
     return {
         init: function() {
             this.drawRating();
+            attachListeners();
         },
         drawRating: function() {
             var games = rStorage.getGames();
