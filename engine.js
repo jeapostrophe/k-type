@@ -2535,6 +2535,9 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             sendData({action: "init", referrer: document.referrer});
         },
         reset: function () {
+            this.difficulty = rStorage.getSetting('difficulty', 'easy');
+            console.log('reset', this.difficulty);
+
             this.entities = [];
             this.currentTarget = null;
             this.wave = {
@@ -2562,9 +2565,20 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                     incEvery: 1,
                     incCount: 2,
                     speed: EntityEnemyMine.prototype.speed,
-                    speedMultiplier: 1.1
+                    speedMultiplier: 1.05
                 }]
             };
+
+            if (this.difficulty == 'hard') {
+                this.wave.types[0].speed *= 2;
+                this.wave.types[0].incEvery = 5;
+                this.wave.types[1].speed *= 2;
+                this.wave.types[1].incEvery = 3;
+                this.wave.types[2].speed *= 2;
+                this.wave.types[2].speedMultiplier = 1.1;
+                this.wave.spawnWait = 0.8;
+            }
+
             var first = 'a'.charCodeAt(0),
                 last = 'z'.charCodeAt(0);
             for (var i = first; i <= last; i++) {
@@ -2591,21 +2605,24 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             this.waveEndTimer = null;
         },
         nextWave: function () {
+            console.log('nextWave', this.difficulty);
+
             if (this.wave.wave >= 1) {
                 sendData({
                     action: 'wave_completed',
                     wave: this.wave.wave,
                     misses: this.misses,
                     hits: this.hits,
-                    score: this.score
+                    score: this.score,
+                    difficulty: this.difficulty
                 })
             }
             this.wave.wave++;
             this.wave.spawn = [];
             var dec = 0;
             var wave = this.wave.wave;
-            if (wave >= 7 && this.wave.spawnWait > 0.5) {
-                // this.wave.spawnWait *= 0.95;
+            if (wave >= 7 && this.wave.spawnWait > 0.5 && this.difficulty == 'hard') {
+                this.wave.spawnWait *= 0.95;
             }
             for (var t = 0; t < this.wave.types.length; t++) {
                 var type = this.wave.types[t];
@@ -2626,7 +2643,6 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             });
         },
         spawnCurrentWave: function () {
-            console.log('spawnCurrentWave');
             if (!this.wave.spawn.length) {
                 if (this.entities.length <= 1 && !this.waveEndTimer) {
                     this.waveEndTimer = new ig.Timer(2);
@@ -2713,7 +2729,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             return false;
         },
         setGame: function () {
-            sendData({action: 'new_game'});
+            sendData({action: 'new_game', difficulty: rStorage.getSetting('difficulty', 'easy')});
             this.player = this.spawnEntity(EntityPlayer, ig.system.width / 2 - 4, ig.system.height - 50);
             this.mode = RType.MODE.GAME;
             this.nextWave();

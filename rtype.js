@@ -2,8 +2,9 @@ window.CANVAS_WIDTH = 360;
 window.CANVAS_HEIGTH = 640;
 
 window.sendData = function(data) {
-
     var xhr = new XMLHttpRequest();
+
+    data['branch'] = 'settings';
 
     var body = JSON.stringify(data);
 
@@ -87,6 +88,10 @@ window.rtype = (function () {
         radio.name = type;
         radio.value = name;
 
+        radio.addEventListener('click', function (e) {
+            rStorage.saveSetting(type, name);
+        });
+
         var span = document.createElement('span');
         span.className = 'checkmark';
 
@@ -108,10 +113,11 @@ window.rtype = (function () {
 
         var savedDict = rStorage.getSetting('dict', 'russian');
         dicts.forEach(function(dict) {
-            var e = createSettingsRadioElement('dictionary', dict.key, dict.label);
+            var e = createSettingsRadioElement('dict', dict.key, dict.label);
             if (dict.key == savedDict) {
                 e.radio.checked = 'checked';
             }
+
             dictionaryContainer.appendChild(e.container);
         })
 

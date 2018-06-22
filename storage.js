@@ -31,6 +31,7 @@ window.rStorage = (function () {
     }
 
     function saveSetting(name, value) {
+        console.log('save setting', name, value);
         var settings = getSettings();
         settings[name] = value;
         localStorage.setItem('settings', JSON.stringify(settings));
