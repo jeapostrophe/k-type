@@ -77,10 +77,68 @@ window.rtype = (function () {
         }
     }
 
+    function createSettingsRadioElement(type, name, caption) {
+        var container = document.createElement('label');
+        container.className = 'form-radio';
+        container.innerHTML = caption;
+
+        var radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = type;
+        radio.value = name;
+
+        var span = document.createElement('span');
+        span.className = 'checkmark';
+
+        container.appendChild(radio);
+        container.appendChild(span);
+
+        return {
+            container: container,
+            radio: radio
+        };
+    }
+
+    function prepareSettings() {
+        var dictionaryContainer = document.getElementById("settings_dictionary");
+        var dicts = [{
+            key: 'russian',
+            label: 'основной'
+        }];
+
+        var savedDict = rStorage.getSetting('dict', 'russian');
+        dicts.forEach(function(dict) {
+            var e = createSettingsRadioElement('dictionary', dict.key, dict.label);
+            if (dict.key == savedDict) {
+                e.radio.checked = 'checked';
+            }
+            dictionaryContainer.appendChild(e.container);
+        })
+
+        var difficultyContainer = document.getElementById("settings_difficulty");
+
+        var difficulties = [{key: 'hard', label: 'сложно'}, {key: 'easy', label: 'легко'}];
+        var savedDifficulty = rStorage.getSetting('difficulty', 'easy');
+        console.log(savedDifficulty);
+        difficulties.forEach(function (difficulty) {
+            var e = createSettingsRadioElement('difficulty', difficulty.key, difficulty.label);
+            if (difficulty.key == savedDifficulty) {
+                e.radio.checked = 'checked';
+            }
+            difficultyContainer.appendChild(e.container);
+        });
+
+        var settingsElement = document.getElementById("settings");
+        settingsElement.style.left = 'calc(50% - ' + (CANVAS_WIDTH / 2 + 50 + 150) + 'px)';
+        settingsElement.style.top = 'calc(50% - ' + (settingsElement.offsetHeight / 2 + CANVAS_HEIGTH / 2 - 350) + 'px)';
+        settingsElement.style.display = 'inline-block';
+    }
+
     return {
         init: function() {
             this.drawRating();
             attachListeners();
+            prepareSettings();
         },
         drawRating: function() {
             var games = rStorage.getGames();

@@ -4,81 +4,17 @@
     <meta charset="utf-8">
     <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
     <title>R-Type</title>
-    <style type="text/css">
-        html,body {
-            background-color: #25272b;
-            background-image: url(geekscontent.png);
-            background-position: 54px 105px;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            color: #fff;
-            font-family: helvetica, arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            font-size: 12pt;
-        }
-
-        #canvas {
-            border: 1px solid #555;
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            margin: auto;
-        }
-
-        #rating {
-            position: absolute;;
-            display: none;
-            width: 100px;
-        }
-
-        img {
-            border: 0;
-        }
-
-        #tg_button {
-            position: fixed;
-            right: 20px; bottom: 0;
-        }
-        #github_button {
-            position: fixed;
-            right: 80px; bottom: 0;
-        }
-        #ava_button {
-            position: fixed;
-            right: 140px; bottom: 0;
-        }
-
-        table.tbl {
-            font-family: "Arial", sans-serif;
-            color: white;
-            width: 100%;
-            text-align: left;
-            border-collapse: collapse;
-        }
-        table.tbl td, table.tbl th {
-            padding: 5px 4px;
-            text-align: center;
-        }
-        table.tbl td {
-            font-size: 13px;
-        }
-        table.tbl tr:not(.thead) {
-            border-top: 1px solid gray;
-        }
-        table.tbl tr.thead th {
-            font-size: 15px;
-            font-weight: normal;
-            text-align: left;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <!--<script type="text/javascript" src="engine.js"></script>-->
-
 </head>
 <body>
 <div id="rating" class="datagrid"></div>
+<div id="settings">
+    <h2>словарь:</h2>
+    <div id="settings_dictionary"></div>
+    <h2>сложность:</h2>
+    <div id="settings_difficulty"></div>
+</div>
 <canvas id="canvas">
     <p>
         Для игры вам необходим нормальный браузер:
@@ -100,8 +36,8 @@
     <p><a class="footer_btn" href="https:/t.me/ava_exmachina_bot" data-name="ava"><img src="media/support.png" width="50" height="50"></a></p>
 </div>
 
-<script src="storage.js?v=4"></script>
-<script src="rtype.js?v=5"></script>
+<script src="storage.js?v=5"></script>
+<script src="rtype.js?v=7"></script>
 <script type="text/javascript">
     rtype.init();
 
