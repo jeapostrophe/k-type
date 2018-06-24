@@ -2729,7 +2729,8 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             return false;
         },
         setGame: function () {
-            sendData({action: 'new_game', difficulty: rStorage.getSetting('difficulty', 'easy')});
+            this.difficulty = rStorage.getSetting('difficulty', 'easy');
+            sendData({action: 'new_game', difficulty: this.difficulty});
             this.player = this.spawnEntity(EntityPlayer, ig.system.width / 2 - 4, ig.system.height - 50);
             this.mode = RType.MODE.GAME;
             this.nextWave();

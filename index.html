@@ -37,15 +37,15 @@
 </div>
 
 <script src="storage.js?v=5"></script>
-<script src="rtype.js?v=7"></script>
+<script src="rtype.js?v=8"></script>
 <script type="text/javascript">
-    rtype.init();
-
     var now = new Date();
     var e = document.createElement("script");
     e.type = "text/javascript";
     e.src = "engine.js?t=" + now.getTime();
     document.body.appendChild(e);
+
+    rtype.init();
 </script>
 </body>
 </html>

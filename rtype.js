@@ -63,7 +63,15 @@ window.rtype = (function () {
         ratingElement.style.top = 'calc(50% - ' + (tbl.offsetHeight / 2 + CANVAS_HEIGTH / 2) + 'px)';
         ratingElement.innerHTML = tbl.outerHTML;
         ratingElement.style.display = 'inline-block';
-        console.log(ratingElement);
+    }
+
+    function drawRating() {
+        var games = rStorage.getGames();
+        if (games && games.length > 0) {
+            drawUserRating(games);
+        } else {
+            ratingElement.style.display = 'none';
+        }
     }
 
     function attachListeners() {
@@ -90,6 +98,12 @@ window.rtype = (function () {
 
         radio.addEventListener('click', function (e) {
             rStorage.saveSetting(type, name);
+
+            if (window.ig && window.ig.game) {
+                window.ig.game.setTitle();
+            }
+
+            drawRating();
         });
 
         var span = document.createElement('span');
@@ -146,12 +160,6 @@ window.rtype = (function () {
             attachListeners();
             prepareSettings();
         },
-        drawRating: function() {
-            var games = rStorage.getGames();
-            console.log(games);
-            if (games && games.length > 0) {
-                drawUserRating(games);
-            }
-        }
+        drawRating: drawRating
     }
 }());

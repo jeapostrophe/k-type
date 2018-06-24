@@ -1,6 +1,22 @@
 window.rStorage = (function () {
-    function getGames() {
-        var games = localStorage.getItem('games');
+    function getStorageKeyWithSettings(key, settings) {
+        var keyData = [];
+        if (settings) {
+            if (settings.difficulty) {
+                keyData.push(settings.difficulty);
+            }
+            if (settings.dictionary) {
+                keyData.push(settings.dictionary);
+            }
+        }
+        keyData.push(key);
+        return keyData.join('.');
+    }
+
+
+    function getGames(settings) {
+        var key = getStorageKeyWithSettings('games', settings);
+        var games = localStorage.getItem(key);
         if (!games) {
             return [];
         } else {
@@ -16,8 +32,9 @@ window.rStorage = (function () {
         }
     }
 
-    function saveGames(gamesArray) {
-        localStorage.setItem('games', JSON.stringify(gamesArray));
+    function saveGames(gamesArray, settings) {
+        var key = getStorageKeyWithSettings('games', settings);
+        localStorage.setItem(key, JSON.stringify(gamesArray));
     }
 
     function getSettings() {
@@ -46,12 +63,16 @@ window.rStorage = (function () {
 
     return {
         addGameRecord: function(gameData) {
+            var settings = getSettings();
             gameData['time'] = Date.now();
-            var games = getGames();
+            var games = getGames(settings);
             games.push(gameData);
-            saveGames(games);
+            saveGames(games, settings);
         },
-        getGames: getGames,
+        getGames: function() {
+            var settings = getSettings();
+            return getGames(settings);
+        },
         getSetting: getSetting,
         saveSetting: saveSetting
     }
