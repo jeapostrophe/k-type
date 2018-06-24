@@ -137,9 +137,9 @@ window.rtype = (function () {
 
         var difficultyContainer = document.getElementById("settings_difficulty");
 
-        var difficulties = [{key: 'hard', label: 'сложно'}, {key: 'easy', label: 'легко'}];
+        var difficulties = [{key: 'easy', label: 'легко'}, {key: 'hard', label: 'сложно'}];
         var savedDifficulty = rStorage.getSetting('difficulty', 'easy');
-        console.log(savedDifficulty);
+
         difficulties.forEach(function (difficulty) {
             var e = createSettingsRadioElement('difficulty', difficulty.key, difficulty.label);
             if (difficulty.key == savedDifficulty) {
