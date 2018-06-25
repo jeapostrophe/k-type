@@ -2743,7 +2743,8 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                 wave: this.wave.wave,
                 score: this.score,
                 hits: this.hits,
-                misses: this.misses
+                misses: this.misses,
+                difficulty: this.difficulty
             };
             sendData(gameData);
             rStorage.addGameRecord(gameData);
