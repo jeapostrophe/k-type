@@ -2358,6 +2358,7 @@ ig.module('game.entities.player').requires('impact.entity', 'game.entities.parti
         soundShoot: new ig.Sound('media/sounds/plasma.ogg'),
         soundMiss: new ig.Sound('media/sounds/click.ogg'),
         soundExplode: new ig.Sound('media/sounds/explosion.ogg'),
+        soundWasted: new ig.Sound('media/sounds/wasted.ogg'),
         type: ig.Entity.TYPE.A,
         init: function (x, y, settings) {
             this.parent(x, y, settings);
@@ -2386,7 +2387,8 @@ ig.module('game.entities.player').requires('impact.entity', 'game.entities.parti
         },
         kill: function () {
             ig.game.setGameOver();
-            this.soundExplode.play();
+            // this.soundExplode.play();
+            this.soundWasted.play();
             for (var i = 0; i < 50; i++) {
                 ig.game.spawnEntity(EntityExplosionParticleFast, this.pos.x, this.pos.y);
             }
@@ -2817,7 +2819,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                 var ys = ig.system.height / 3 + (d < 1 ? Math.cos(1 - d).map(1, 0, 0, 250) : 0);
                 var w = this.wave.wave.zeroFill(3);
                 ig.system.context.globalAlpha = a;
-                this.fontTitle.draw('Wave ' + w + ' Clear', xs, ys, ig.Font.ALIGN.CENTER);
+                this.fontTitle.draw('Волна ' + w + ' пройдена', xs, ys, ig.Font.ALIGN.CENTER);
                 ig.system.context.globalAlpha = 1;
             }
         },
@@ -2842,11 +2844,11 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             var xs = ig.system.width / 2;
             var ys = ig.system.height / 4;
             var acc = this.hits ? this.hits / (this.hits + this.misses) * 100 : 0;
-            this.fontTitle.draw('Game Over', xs, ys, ig.Font.ALIGN.CENTER);
-            this.font.draw('Final Score: ' + this.score.zeroFill(6), xs - 58, ys + 90);
-            this.font.draw('Accuracy: ' + acc.round(1) + '%', xs - 44, ys + 114);
-            this.font.draw('Current wave: ' + this.wave.wave.zeroFill(3), xs - 74, ys + 138);
-            this.font.draw('Press ENTER to Continue', xs, ys + 190, ig.Font.ALIGN.CENTER);
+            this.fontTitle.draw('Потрачено!', xs, ys, ig.Font.ALIGN.CENTER);
+            this.font.draw('Результат: ' + this.score.zeroFill(6), xs, ys + 90, ig.Font.ALIGN.CENTER);
+            this.font.draw('Точность: ' + acc.round(1) + '%', xs, ys + 114, ig.Font.ALIGN.CENTER);
+            this.font.draw('Текущая волна: ' + this.wave.wave.zeroFill(3), xs, ys + 138, ig.Font.ALIGN.CENTER);
+            this.font.draw('Жми ENTER', xs, ys + 190, ig.Font.ALIGN.CENTER);
         }
     });
     MenuItem = ig.Class.extend({
