@@ -4,7 +4,7 @@ window.CANVAS_HEIGTH = 640;
 window.sendData = function(data) {
     var xhr = new XMLHttpRequest();
 
-    data['branch'] = 'settings';
+    data['branch'] = 'master';
 
     var body = JSON.stringify(data);
 
