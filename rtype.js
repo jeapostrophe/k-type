@@ -8,7 +8,7 @@ window.sendData = function(data) {
 
     var body = JSON.stringify(data);
 
-    xhr.open("POST", '/api', true);
+    xhr.open("POST", 'https://typeordie.space/api', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.onreadystatechange = function () {
