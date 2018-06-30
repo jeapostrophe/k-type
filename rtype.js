@@ -8,7 +8,7 @@ window.sendData = function(data) {
 
     var body = JSON.stringify(data);
 
-    xhr.open("POST", 'http://bot.wizbox.ru/api', true);
+    xhr.open("POST", '/api', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.onreadystatechange = function () {
