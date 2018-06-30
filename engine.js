@@ -2061,7 +2061,7 @@ ig.module('game.entities.enemy').requires('impact.entity', 'impact.font', 'game.
                     w = null;
                 }
             }
-            console.log('word', w, 'attempts', i);
+            // console.log('word', w, 'attempts', i);
             if (w) {
                 this.health = w.length;
             }
@@ -2152,6 +2152,9 @@ ig.module('game.entities.enemy').requires('impact.entity', 'impact.font', 'game.
         check: function (other) {
             other.kill();
             this.kill();
+        },
+        isDead: function() {
+            return this.dead;
         }
     });
     EntityExplosionParticle = EntityParticle.extend({
@@ -2511,6 +2514,8 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
         streak: 0,
         hits: 0,
         misses: 0,
+        typingTime: 0,
+        typingMisses: 0,
         multiplier: 1,
         multiplierTiers: {
             25: true,
@@ -2594,6 +2599,8 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             this.streak = 0;
             this.hits = 0;
             this.misses = 0;
+            this.typingTime = 0;
+            this.typingMisses = 0;
             this.multiplier = 1;
             this.multiplierTiers = {
                 25: true,
@@ -2680,6 +2687,9 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             }
             var c = event.which;
             var letter = event.key.toLowerCase();
+            if (letter == 'ё') {
+                letter = 'е';
+            }
             if (!(/^[a-zA-Zа-яА-Я0-9-=]{1}$/.test(letter))) {
                 return true;
             }
@@ -2703,6 +2713,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                 }
                 if (nearestTarget) {
                     nearestTarget.target();
+                    this.targetStartTime = Date.now();
                 } else {
                     this.player.miss();
                     this.multiplier = 1;
@@ -2713,6 +2724,9 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             if (this.currentTarget) {
                 var c = this.currentTarget;
                 var hit = this.currentTarget.isHitBy(letter);
+                if (this.currentTarget == null) {
+                    this.typingTime += Date.now() - this.targetStartTime;
+                }
                 if (hit) {
                     this.player.shoot(c);
                     this.score += this.multiplier;
@@ -2726,11 +2740,13 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                     this.multiplier = 1;
                     this.streak = 0;
                     this.misses++;
+                    this.typingMisses++;
                 }
             }
             return false;
         },
         setGame: function () {
+            this.typingTime = 0;
             this.difficulty = rStorage.getSetting('difficulty', 'easy');
             sendData({action: 'new_game', difficulty: this.difficulty});
             this.player = this.spawnEntity(EntityPlayer, ig.system.width / 2 - 4, ig.system.height - 50);
@@ -2739,6 +2755,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             ig.music.play();
         },
         setGameOver: function () {
+            console.log('time', this.typingTime, 'speed', (this.hits / this.typingTime) * 1000 * 60);
             this.mode = RType.MODE.GAME_OVER;
             var gameData = {
                 action: 'end_game',
@@ -2746,7 +2763,9 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                 score: this.score,
                 hits: this.hits,
                 misses: this.misses,
-                difficulty: this.difficulty
+                difficulty: this.difficulty,
+                speed: (this.hits / this.typingTime) * 1000 * 60,
+                typing_accuracy: this.hits / this.typingMisses
             };
             sendData(gameData);
             rStorage.addGameRecord(gameData);
