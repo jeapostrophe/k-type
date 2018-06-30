@@ -2826,7 +2826,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
         drawTitle: function () {
             var xs = ig.system.width / 2;
             var ys = ig.system.height / 4;
-            this.fontTitle.draw('R-Type', xs, ys, ig.Font.ALIGN.CENTER);
+            this.fontTitle.draw('Type Or Die', xs, ys, ig.Font.ALIGN.CENTER);
             this.font.draw('Печатай или умри!', xs, ys + 90, ig.Font.ALIGN.CENTER);
             // this.font.draw('ESC: Menu/Pause', xs, ys + 160, ig.Font.ALIGN.CENTER);
             this.font.draw('Переключись на русский', xs, ys + 190, ig.Font.ALIGN.CENTER);
