@@ -2755,7 +2755,8 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             ig.music.play();
         },
         setGameOver: function () {
-            console.log('time', this.typingTime, 'speed', (this.hits / this.typingTime) * 1000 * 60);
+            var typingSpeed = this.typingTime > 0 ? (this.hits / this.typingTime) * 1000 * 60 : 0;
+            console.log('time', this.typingTime, 'speed', typingSpeed);
             this.mode = RType.MODE.GAME_OVER;
             var gameData = {
                 action: 'end_game',
@@ -2764,7 +2765,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                 hits: this.hits,
                 misses: this.misses,
                 difficulty: this.difficulty,
-                speed: (this.hits / this.typingTime) * 1000 * 60,
+                speed: typingSpeed,
                 typing_accuracy: this.hits / this.typingMisses
             };
             sendData(gameData);
