@@ -2766,7 +2766,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                 misses: this.misses,
                 difficulty: this.difficulty,
                 speed: typingSpeed,
-                typing_accuracy: this.hits / this.typingMisses
+                typing_accuracy: (this.hits / (this.typingMisses + this.hits)) * 100
             };
             sendData(gameData);
             rStorage.addGameRecord(gameData);
