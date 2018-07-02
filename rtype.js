@@ -210,18 +210,6 @@ window.rtype = (function () {
         settingsElement.style.display = 'inline-block';
     }
 
-    function initSocialNetworks() {
-        var vkBtn = document.getElementById("vk_post");
-        vkBtn.addEventListener("click", function() {
-            VK.Api.call('wall.post', {
-                v: '5.73',
-                message: 'Славик крут!'
-            }, function(r) {
-                console.log(r);
-            })
-        })
-    }
-
     return {
         init: function() {
             this.drawRating();
