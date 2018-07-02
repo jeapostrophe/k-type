@@ -119,6 +119,7 @@ window.rtype = (function () {
         ratingElement.innerHTML = '';
         ratingElement.appendChild(tbl);
         ratingElement.style.display = 'inline-block';
+        avgSpeedContainerElement.style.display = 'inline-block';
     }
 
     function drawRating() {
@@ -127,6 +128,7 @@ window.rtype = (function () {
             drawUserRating(games);
         } else {
             ratingElement.style.display = 'none';
+            avgSpeedContainerElement.style.display = 'none';
         }
     }
 
@@ -215,7 +217,6 @@ window.rtype = (function () {
             this.drawRating();
             attachListeners();
             prepareSettings();
-            initSocialNetworks();
         },
         drawRating: drawRating
     }
