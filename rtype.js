@@ -94,6 +94,7 @@ window.rtype = (function () {
                     } else {
                         var value = key in games[i] ? games[i][key] : '';
                         if (value && (key == 'speed' || key == 'typing_accuracy')) {
+                            value = Number(value);
                             if (key == 'speed') {
                                 speedSum += value;
                                 speedCount++;
@@ -110,6 +111,7 @@ window.rtype = (function () {
 
         avgSpeedValueElement.innerHTML = (speedSum / speedCount).toFixed(1);
 
+        avgSpeedContainerElement.style.display = 'inline-block';
         ratingElement.style.left = 'calc(50% + ' + (CANVAS_WIDTH / 2 + 50) + 'px)';
         avgSpeedContainerElement.style.left = ratingElement.style.left;
         avgSpeedContainerElement.style.top = 'calc(50% - ' + (tbl.offsetHeight / 2 + CANVAS_HEIGTH / 2) + 'px)';
@@ -119,7 +121,6 @@ window.rtype = (function () {
         ratingElement.innerHTML = '';
         ratingElement.appendChild(tbl);
         ratingElement.style.display = 'inline-block';
-        avgSpeedContainerElement.style.display = 'inline-block';
     }
 
     function drawRating() {
