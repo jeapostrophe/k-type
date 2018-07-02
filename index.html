@@ -4,10 +4,11 @@
     <meta charset="utf-8">
     <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
     <title>Type Or Die</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=1">
     <!--<script type="text/javascript" src="engine.js"></script>-->
 </head>
 <body>
+<div id="avg_speed">Средняя скорость:<br><span id="avg_speed_value">0</span> зн/мин</div>
 <div id="rating" class="datagrid"></div>
 <div id="settings">
     <h2>словарь:</h2>
@@ -40,7 +41,7 @@
 
 <script src="storage.js?v=5"></script>
 <script src="https://vk.com/js/api/openapi.js?156" type="text/javascript"></script>
-<script src="rtype.js?v=8"></script>
+<script src="rtype.js?v=16"></script>
 <script type="text/javascript">
     var now = new Date();
     var e = document.createElement("script");
@@ -49,7 +50,7 @@
     document.body.appendChild(e);
 
     VK.init({
-      apiId: '<ID>'
+      apiId: '6616161'
     });
 
     rtype.init();

@@ -47,7 +47,6 @@ img {
     position: fixed;
     right: 140px; bottom: 0;
 }
-
 table.tbl {
     font-family: "Arial", sans-serif;
     color: white;
@@ -135,3 +134,15 @@ table.tbl tr.thead th {
     background-color: #2196F3;
 }
 
+#avg_speed {
+    font-size: 24px;
+    color: white;
+    width: 250px;
+    text-align: center;
+    display: inline-block;
+    position: absolute;
+}
+
+.vk_btn {
+    height: 15px;
+}
