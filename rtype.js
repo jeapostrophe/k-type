@@ -73,7 +73,8 @@ window.rtype = (function () {
 
                                 sendData({
                                     action: 'btn_click',
-                                    btn_name: 'share_vk'
+                                    btn_name: 'share_vk',
+                                    text: text
                                 });
 
                                 VK.Api.call('wall.post', {
