@@ -2061,7 +2061,7 @@ ig.module('game.entities.enemy').requires('impact.entity', 'impact.font', 'game.
                     w = null;
                 }
             }
-            console.log('word', w, 'attempts', i);
+            // console.log('word', w, 'attempts', i);
             if (w) {
                 this.health = w.length;
             }
@@ -2152,6 +2152,9 @@ ig.module('game.entities.enemy').requires('impact.entity', 'impact.font', 'game.
         check: function (other) {
             other.kill();
             this.kill();
+        },
+        isDead: function() {
+            return this.dead;
         }
     });
     EntityExplosionParticle = EntityParticle.extend({
@@ -2358,6 +2361,7 @@ ig.module('game.entities.player').requires('impact.entity', 'game.entities.parti
         soundShoot: new ig.Sound('media/sounds/plasma.ogg'),
         soundMiss: new ig.Sound('media/sounds/click.ogg'),
         soundExplode: new ig.Sound('media/sounds/explosion.ogg'),
+        soundWasted: new ig.Sound('media/sounds/wasted.ogg'),
         type: ig.Entity.TYPE.A,
         init: function (x, y, settings) {
             this.parent(x, y, settings);
@@ -2386,7 +2390,8 @@ ig.module('game.entities.player').requires('impact.entity', 'game.entities.parti
         },
         kill: function () {
             ig.game.setGameOver();
-            this.soundExplode.play();
+            // this.soundExplode.play();
+            this.soundWasted.play();
             for (var i = 0; i < 50; i++) {
                 ig.game.spawnEntity(EntityExplosionParticleFast, this.pos.x, this.pos.y);
             }
@@ -2509,6 +2514,8 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
         streak: 0,
         hits: 0,
         misses: 0,
+        typingTime: 0,
+        typingMisses: 0,
         multiplier: 1,
         multiplierTiers: {
             25: true,
@@ -2592,6 +2599,8 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             this.streak = 0;
             this.hits = 0;
             this.misses = 0;
+            this.typingTime = 0;
+            this.typingMisses = 0;
             this.multiplier = 1;
             this.multiplierTiers = {
                 25: true,
@@ -2678,6 +2687,9 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             }
             var c = event.which;
             var letter = event.key.toLowerCase();
+            if (letter == 'ё') {
+                letter = 'е';
+            }
             if (!(/^[a-zA-Zа-яА-Я0-9-=]{1}$/.test(letter))) {
                 return true;
             }
@@ -2701,6 +2713,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                 }
                 if (nearestTarget) {
                     nearestTarget.target();
+                    this.targetStartTime = Date.now();
                 } else {
                     this.player.miss();
                     this.multiplier = 1;
@@ -2711,6 +2724,9 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             if (this.currentTarget) {
                 var c = this.currentTarget;
                 var hit = this.currentTarget.isHitBy(letter);
+                if (this.currentTarget == null) {
+                    this.typingTime += Date.now() - this.targetStartTime;
+                }
                 if (hit) {
                     this.player.shoot(c);
                     this.score += this.multiplier;
@@ -2724,11 +2740,13 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                     this.multiplier = 1;
                     this.streak = 0;
                     this.misses++;
+                    this.typingMisses++;
                 }
             }
             return false;
         },
         setGame: function () {
+            this.typingTime = 0;
             this.difficulty = rStorage.getSetting('difficulty', 'easy');
             sendData({action: 'new_game', difficulty: this.difficulty});
             this.player = this.spawnEntity(EntityPlayer, ig.system.width / 2 - 4, ig.system.height - 50);
@@ -2737,6 +2755,11 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             ig.music.play();
         },
         setGameOver: function () {
+            var typingSpeed = this.typingTime > 0 ? (this.hits / this.typingTime) * 1000 * 60 : 0;
+            typingSpeed = typingSpeed.toFixed(2);
+            var typingAccuracy = (this.hits / (this.typingMisses + this.hits)) * 100;
+            typingAccuracy = typingAccuracy.toFixed(2);
+            console.log('time', this.typingTime, 'speed', typingSpeed, 'accuracy', typingAccuracy);
             this.mode = RType.MODE.GAME_OVER;
             var gameData = {
                 action: 'end_game',
@@ -2744,7 +2767,9 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                 score: this.score,
                 hits: this.hits,
                 misses: this.misses,
-                difficulty: this.difficulty
+                difficulty: this.difficulty,
+                speed: typingSpeed,
+                typing_accuracy: typingAccuracy
             };
             sendData(gameData);
             rStorage.addGameRecord(gameData);
@@ -2817,14 +2842,14 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                 var ys = ig.system.height / 3 + (d < 1 ? Math.cos(1 - d).map(1, 0, 0, 250) : 0);
                 var w = this.wave.wave.zeroFill(3);
                 ig.system.context.globalAlpha = a;
-                this.fontTitle.draw('Wave ' + w + ' Clear', xs, ys, ig.Font.ALIGN.CENTER);
+                this.fontTitle.draw('Волна ' + w + ' пройдена', xs, ys, ig.Font.ALIGN.CENTER);
                 ig.system.context.globalAlpha = 1;
             }
         },
         drawTitle: function () {
             var xs = ig.system.width / 2;
             var ys = ig.system.height / 4;
-            this.fontTitle.draw('R-Type', xs, ys, ig.Font.ALIGN.CENTER);
+            this.fontTitle.draw('Type Or Die', xs, ys, ig.Font.ALIGN.CENTER);
             this.font.draw('Печатай или умри!', xs, ys + 90, ig.Font.ALIGN.CENTER);
             // this.font.draw('ESC: Menu/Pause', xs, ys + 160, ig.Font.ALIGN.CENTER);
             this.font.draw('Переключись на русский', xs, ys + 190, ig.Font.ALIGN.CENTER);
@@ -2842,11 +2867,11 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             var xs = ig.system.width / 2;
             var ys = ig.system.height / 4;
             var acc = this.hits ? this.hits / (this.hits + this.misses) * 100 : 0;
-            this.fontTitle.draw('Game Over', xs, ys, ig.Font.ALIGN.CENTER);
-            this.font.draw('Final Score: ' + this.score.zeroFill(6), xs - 58, ys + 90);
-            this.font.draw('Accuracy: ' + acc.round(1) + '%', xs - 44, ys + 114);
-            this.font.draw('Current wave: ' + this.wave.wave.zeroFill(3), xs - 74, ys + 138);
-            this.font.draw('Press ENTER to Continue', xs, ys + 190, ig.Font.ALIGN.CENTER);
+            this.fontTitle.draw('Потрачено!', xs, ys, ig.Font.ALIGN.CENTER);
+            this.font.draw('Результат: ' + this.score.zeroFill(6), xs, ys + 90, ig.Font.ALIGN.CENTER);
+            this.font.draw('Точность: ' + acc.round(1) + '%', xs, ys + 114, ig.Font.ALIGN.CENTER);
+            this.font.draw('Текущая волна: ' + this.wave.wave.zeroFill(3), xs, ys + 138, ig.Font.ALIGN.CENTER);
+            this.font.draw('Жми ENTER', xs, ys + 190, ig.Font.ALIGN.CENTER);
         }
     });
     MenuItem = ig.Class.extend({

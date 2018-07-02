@@ -4,11 +4,11 @@ window.CANVAS_HEIGTH = 640;
 window.sendData = function(data) {
     var xhr = new XMLHttpRequest();
 
-    data['branch'] = 'settings';
+    data['branch'] = 'master';
 
     var body = JSON.stringify(data);
 
-    xhr.open("POST", 'http://bot.wizbox.ru/api', true);
+    xhr.open("POST", 'https://typeordie.space/api', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.onreadystatechange = function () {
