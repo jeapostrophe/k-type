@@ -40,7 +40,7 @@ window.rtype = (function () {
         var tbl = document.createElement('table');
         tbl.className = 'tbl';
 
-        var speedSum = 0, speedCount = 1;
+        var speedSum = 0, speedCount = 0;
 
         for (var i = -1; i < games.length && i < 20; i++) {
             if (i >= 0) {
@@ -107,6 +107,10 @@ window.rtype = (function () {
                 tr.appendChild(e);
             });
             tbl.appendChild(tr);
+        }
+
+        if (speedCount === 0) {
+            speedCount = 1;
         }
 
         avgSpeedValueElement.innerHTML = (speedSum / speedCount).toFixed(1);
