@@ -2870,8 +2870,9 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             this.fontTitle.draw('Потрачено!', xs, ys, ig.Font.ALIGN.CENTER);
             this.font.draw('Результат: ' + this.score.zeroFill(6), xs, ys + 90, ig.Font.ALIGN.CENTER);
             this.font.draw('Точность: ' + acc.round(1) + '%', xs, ys + 114, ig.Font.ALIGN.CENTER);
-            this.font.draw('Текущая волна: ' + this.wave.wave.zeroFill(3), xs, ys + 138, ig.Font.ALIGN.CENTER);
-            this.font.draw('Жми ENTER', xs, ys + 190, ig.Font.ALIGN.CENTER);
+            this.font.draw('Уровень: ' + (this.difficulty === 'hard' ? 'сложно' : 'легко'), xs, ys + 138, ig.Font.ALIGN.CENTER);
+            this.font.draw('Текущая волна: ' + this.wave.wave.zeroFill(3), xs, ys + 162, ig.Font.ALIGN.CENTER);
+            this.font.draw('Жми ENTER', xs, ys + 214, ig.Font.ALIGN.CENTER);
         }
     });
     MenuItem = ig.Class.extend({

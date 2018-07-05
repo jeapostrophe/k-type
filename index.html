@@ -49,9 +49,13 @@
     e.src = "engine.js?t=" + now.getTime();
     document.body.appendChild(e);
 
-    VK.init({
-      apiId: '6616161'
-    });
+    try {
+        VK.init({
+            apiId: '6616161'
+        });
+    } catch (e) {
+        console.error('something wrong with VK');
+    }
 
     rtype.init();
 </script>
