@@ -11,7 +11,7 @@ html,body {
     font-size: 12pt;
 }
 
-#canvas {
+#canvas_wrap {
     border: 1px solid #555;
     position: absolute;
     left: 0;
@@ -19,6 +19,15 @@ html,body {
     top: 0;
     bottom: 0;
     margin: auto;
+    width: 360px;
+    height: 640px;
+}
+#canvas_touch_input_area {
+    position: absolute;
+    opacity: 0;
+    left: 0;
+    top: 0;
+    z-index: -1;
 }
 
 #rating, #settings {

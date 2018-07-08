@@ -125,6 +125,19 @@ window.rtype = (function () {
         ratingElement.innerHTML = '';
         ratingElement.appendChild(tbl);
         ratingElement.style.display = 'inline-block';
+
+        // Если юзер решил поиграть с сенсорного экрана, нужно перевести фокус
+        // на поле ввода, чтоб вылезла экранная клавиатура.
+        // Но нельзя просто взять и воткнуть focus() в touchend, потому что через ~100мс
+        // сработает click() по канвасу, и уберёт фокус (а с ним и клавиатуру).
+        var isTouch = false
+        canvas.addEventListener('touchend', function(e){
+            isTouch = true;
+        })
+        canvas.addEventListener('click', function(){
+            canvas_touch_input_area.focus();
+            isTouch = false; //на всякий случай, вдруг юзер одумается и решит таки подключить хардварную клавиатуру
+        })
     }
 
     function drawRating() {

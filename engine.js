@@ -2531,6 +2531,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             this.backgroundMaps.push(bgmap);
             ig.music.add(this.music);
             window.addEventListener('keydown', this.keydown.bind(this), false);
+            window.addEventListener('keyup', this.keyup.bind(this), false);
             ig.input.bind(ig.KEY.ENTER, 'ok');
             ig.input.bind(ig.KEY.BACKSPACE, 'void');
             ig.input.bind(ig.KEY.ESC, 'menu');
@@ -2681,24 +2682,34 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             this.targets[letter].erase(ent);
         },
         keydown: function (event) {
-            // debugger;
             if (event.target.type == 'text' || event.ctrlKey || event.shiftKey || event.altKey || this.mode != RType.MODE.GAME || this.menu) {
-                return true;
+                return;
             }
-            var c = event.which;
-            var letter = event.key.toLowerCase();
+            if (event.key == 'Unidentified') {
+                return;
+            }
+
+            if (!this.handleLetter(event.key)) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        },
+        keyup: function (event) {
+            if (event.key == 'Unidentified' && event.target.type == 'textarea') {
+                letter = event.target.value[event.target.value.length-1];
+                event.target.value = '';
+                this.handleLetter(letter);
+            }
+        },
+        handleLetter: function (letter) {
+            letter = letter.toLowerCase();
+
             if (letter == 'ё') {
                 letter = 'е';
             }
             if (!(/^[a-zA-Zа-яА-Я0-9-=]{1}$/.test(letter))) {
                 return true;
             }
-            // if (!((c > 64 && c < 91) || (c > 96 && c < 123))) {
-            //     return true;
-            // }
-            event.stopPropagation();
-            event.preventDefault();
-
 
             if (!this.currentTarget) {
                 var potentialTargets = this.targets[letter];
