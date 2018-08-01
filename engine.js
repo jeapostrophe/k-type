@@ -2531,7 +2531,8 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             this.backgroundMaps.push(bgmap);
             ig.music.add(this.music);
             window.addEventListener('keydown', this.keydown.bind(this), false);
-            window.addEventListener('keyup', this.keyup.bind(this), false);
+            document.getElementById('canvas_touch_input_area')
+                .addEventListener('input', this.touchAreaInput.bind(this), false);
             ig.input.bind(ig.KEY.ENTER, 'ok');
             ig.input.bind(ig.KEY.BACKSPACE, 'void');
             ig.input.bind(ig.KEY.ESC, 'menu');
@@ -2685,7 +2686,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             if (event.target.type == 'text' || event.ctrlKey || event.shiftKey || event.altKey || this.mode != RType.MODE.GAME || this.menu) {
                 return;
             }
-            if (event.key == 'Unidentified') {
+            if (event.key == 'Unidentified') { //при вводе с экранной (мобильной) клавиатуры
                 return;
             }
 
@@ -2694,13 +2695,16 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                 event.preventDefault();
             }
         },
-        keyup: function (event) {
-            if (event.key == 'Unidentified' && event.target.type == 'textarea') {
-                letter = event.target.value[event.target.value.length-1];
-                event.target.value = '';
-                this.handleLetter(letter);
+        touchAreaInput: function (event) {
+            if (this.mode != RType.MODE.GAME || this.menu) {
+                return;
             }
+            var letters = event.target.value;
+            event.target.value = '';
+            for (var i=0; i<letters.length; i++) //ввод в поле не всегда работает по буквам, например при непрерывном вводе (swype keyboard) вставляются целые слова
+                this.handleLetter(letters[i]);
         },
+
         handleLetter: function (letter) {
             letter = letter.toLowerCase();
 
@@ -2760,6 +2764,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             this.typingTime = 0;
             this.difficulty = rStorage.getSetting('difficulty', 'easy');
             sendData({action: 'new_game', difficulty: this.difficulty});
+            document.getElementById('canvas_touch_input_area').value = ''; //с инпут до начала игры могли что-то натыкать; не нужно, чтоб это попало в первый ввод и испортило точность
             this.player = this.spawnEntity(EntityPlayer, ig.system.width / 2 - 4, ig.system.height - 50);
             this.mode = RType.MODE.GAME;
             this.nextWave();
