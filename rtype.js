@@ -24,6 +24,8 @@ window.rtype = (function () {
     var ratingElement = document.getElementById('rating');
     var avgSpeedContainerElement = document.getElementById('avg_speed');
     var avgSpeedValueElement = document.getElementById('avg_speed_value');
+    var canvasElement = document.getElementById('canvas');
+    var canvasTouchInputArea = document.getElementById('canvas_touch_input_area');
 
     var fields = {
         'position': '#',
@@ -35,6 +37,19 @@ window.rtype = (function () {
     };
 
     var keys = Object.keys(fields);
+
+    // Если юзер решил поиграть с сенсорного экрана, нужно перевести фокус
+    // на поле ввода, чтоб вылезла экранная клавиатура.
+    // Но нельзя просто взять и воткнуть focus() в touchend, потому что через ~100мс
+    // сработает click() по канвасу, и уберёт фокус (а с ним и клавиатуру).
+    var isTouch = false
+    canvasElement.addEventListener('touchend', function(e){
+        isTouch = true;
+    })
+    canvasElement.addEventListener('click', function(){
+        canvasTouchInputArea.focus();
+        isTouch = false; //на всякий случай, вдруг юзер одумается и решит таки подключить хардварную клавиатуру
+    })
 
     function drawUserRating(games) {
         var tbl = document.createElement('table');
