@@ -83,7 +83,7 @@ window.rtype = (function () {
                                 ev.preventDefault();
 
                                 var text = 'На ' + (game['difficulty'] == 'easy' ? 'легком' : 'сложном')
-                                    + ' уровне со скоростью ' + game['speed'].toFixed(1) + ' знаков в минуту мне удалось достичь '
+                                    + ' уровне со скоростью ' + Number(game['speed']).toFixed(1) + ' знаков в минуту мне удалось достичь '
                                     + game['wave'] + ' волны. Попробуй и ты!\nhttps://typeordie.space';
 
                                 sendData({
