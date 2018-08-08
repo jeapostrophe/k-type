@@ -2541,7 +2541,11 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             ig.input.bind(ig.KEY.LEFT_ARROW, 'left');
             ig.input.bind(ig.KEY.RIGHT_ARROW, 'right');
             this.setTitle();
-            sendData({action: "init", referrer: document.referrer});
+            var mobile = false;
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                mobile = true;
+            }
+            sendData({action: "init", referrer: document.referrer, mobile: mobile});
         },
         reset: function () {
             this.difficulty = rStorage.getSetting('difficulty', 'easy');
