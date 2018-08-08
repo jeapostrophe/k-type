@@ -2781,6 +2781,10 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
             typingAccuracy = typingAccuracy.toFixed(2);
             console.log('time', this.typingTime, 'speed', typingSpeed, 'accuracy', typingAccuracy);
             this.mode = RType.MODE.GAME_OVER;
+            var mobile = false;
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                mobile = true;
+            }
             var gameData = {
                 action: 'end_game',
                 wave: this.wave.wave,
@@ -2789,6 +2793,7 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.entities.ene
                 misses: this.misses,
                 difficulty: this.difficulty,
                 speed: typingSpeed,
+                mobile: mobile,
                 typing_accuracy: typingAccuracy
             };
             sendData(gameData);
