@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Стреляй по космическим кораблям с помощью нажатий на клавиши! Чем выше скорость печати, тем больше шансов выжить.">
+    <meta name="keywords" content="z-type russian typing speed type keys space invaders скорость печати клавиши печать русский по-русски ztype по-русски на русском клавиатурный тренажер космические корабли">
+    <meta property="og:image" content="https://pp.userapi.com/c845020/v845020435/c85b1/GAuDgDDmvmE.jpg">
+    <!-- <meta property="og:image:width" content="100px" /> -->
+    <!-- <meta property="og:image:height" content="100px" /> -->
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <title>Type Or Die</title>
+    <link rel="stylesheet" href="style.css?v=1">
+    <!--<script type="text/javascript" src="engine.js"></script>-->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-122831375-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-122831375-1');
+    </script>
+	
+	<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function() {
+            try {
+                w.yaCounter49755697 = new Ya.Metrika2({
+                    id:49755697,
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true
+                });
+            } catch(e) { }
+        });
+
+        var n = d.getElementsByTagName("script")[0],
+            s = d.createElement("script"),
+            f = function () { n.parentNode.insertBefore(s, n); };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "https://mc.yandex.ru/metrika/tag.js";
+
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else { f(); }
+    })(document, window, "yandex_metrika_callbacks2");
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/49755697" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</head>
+<body>
+<div id="avg_speed">Средняя скорость:<br><span id="avg_speed_value">0</span> зн/мин</div>
+<div id="rating" class="datagrid"></div>
+<div id="settings">
+    <h2>словарь:</h2>
+    <div id="settings_dictionary"></div>
+    <h2>сложность:</h2>
+    <div id="settings_difficulty"></div>
+</div>
+<div id="canvas_wrap">
+    <canvas id="canvas">
+        <p>
+            Для игры вам необходим нормальный браузер:
+            <a href="http://www.opera.com/">Opera</a>,
+            <a href="http://www.google.com/chrome">Chrome</a>,
+            <a href="http://www.mozilla.com/firefox/">Firefox</a> or
+            <a href="http://www.apple.com/safari/">Safari</a>.
+        </p>
+    </canvas>
+    <textarea id="canvas_touch_input_area" autocapitalize="none"></textarea>
+</div>
+
+<base target="_blank">
+<div id="tg_button">
+    <p><a class="footer_btn" href="https://t.me/geekscontent" data-name="tg_channel"><img src="media/telegram.png" width="50" height="50"></a></p>
+</div>
+<div id="github_button">
+    <p><a class="footer_btn" href="https://github.com/NastassiaUcs/type_or_die" data-name="github"><img src="media/github.png" width="48" height="48"></a></p>
+</div>
+<div id="ava_button">
+    <p><a class="footer_btn" href="https://t.me/ava_exmachina_bot" data-name="ava"><img src="media/support.png?v=1" width="50" height="50"></a></p>
+</div>
+
+<script src="storage.js?v=5"></script>
+<script src="https://vk.com/js/api/openapi.js?156" type="text/javascript"></script>
+<script src="rtype.js?v=22"></script>
+<script type="text/javascript">
+    var now = new Date();
+    var e = document.createElement("script");
+    e.type = "text/javascript";
+    e.src = "engine.js?t=" + now.getTime();
+    document.body.appendChild(e);
+
+    try {
+        VK.init({
+            apiId: '6616161'
+        });
+    } catch (e) {
+        console.error('something wrong with VK');
+    }
+
+    rtype.init();
+</script>
+</body>
+</html>
